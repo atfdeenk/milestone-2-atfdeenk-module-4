@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { Product } from '../types';
 
 export const ProductDetail = () => {
@@ -10,8 +10,11 @@ export const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [isBuyingNow, setIsBuyingNow] = useState(false);
   const [success, setSuccess] = useState('');
+  const [showCheckoutConfirm, setShowCheckoutConfirm] = useState(false);
   const isLoggedIn = localStorage.getItem('token') !== null;
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -80,6 +83,36 @@ export const ProductDetail = () => {
     } finally {
       setIsAddingToCart(false);
     }
+  };
+
+  const processCheckout = () => {
+    setIsBuyingNow(true);
+    const orderNumber = `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`;
+    const orderDate = new Date().toLocaleString();
+
+    const receiptData = {
+      items: [{ ...product, quantity }],
+      totalPrice: product!.price * quantity,
+      orderDate,
+      orderNumber
+    };
+
+    setShowCheckoutConfirm(false);
+    setIsBuyingNow(false);
+
+    // Navigate to receipt page without affecting cart
+    navigate('/receipt', { state: { receiptData } });
+  };
+
+  const handleBuyNow = async () => {
+    if (!isLoggedIn) {
+      setError('Please login to purchase items');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+
+    if (!product) return;
+    setShowCheckoutConfirm(true);
   };
 
   if (loading) {
@@ -208,37 +241,59 @@ export const ProductDetail = () => {
                 </div>
               </div>
 
-              <div className="flex-1 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-600 group">
+              <div className="flex flex-col gap-4">
                 {!isLoggedIn ? (
                   <Link
                     to="/login"
-                    className="flex-1 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-600 group"
+                    className="w-full px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-600 group"
                   >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-white transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                     </svg>
-                    Login to Add to Cart
+                    Login to Purchase
                   </Link>
                 ) : (
-                  <button
-                    onClick={addToCart}
-                    disabled={loading || isAddingToCart}
-                    className="flex-1 px-6 py-3 bg-blue-500 dark:bg-blue-600 text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isAddingToCart ? (
-                      <>
-                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                        <span>Adding to Cart...</span>
-                      </>
-                    ) : (
-                      <>
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                        Add to Cart
-                      </>
-                    )}
-                  </button>
+                  <>
+                    <button
+                      onClick={handleBuyNow}
+                      disabled={loading || isBuyingNow || isAddingToCart}
+                      className="w-full px-6 py-3 bg-green-500 dark:bg-green-600 text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:bg-green-600 dark:hover:bg-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isBuyingNow ? (
+                        <>
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                          <span>Processing...</span>
+                        </>
+                      ) : (
+                        <>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                          </svg>
+                          Buy Now
+                        </>
+                      )}
+                    </button>
+                    
+                    <button
+                      onClick={addToCart}
+                      disabled={loading || isAddingToCart || isBuyingNow}
+                      className="w-full px-6 py-3 bg-blue-500 dark:bg-blue-600 text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {isAddingToCart ? (
+                        <>
+                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                          <span>Adding to Cart...</span>
+                        </>
+                      ) : (
+                        <>
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                          </svg>
+                          Add to Cart
+                        </>
+                      )}
+                    </button>
+                  </>
                 )}
               </div>
 
@@ -255,6 +310,56 @@ export const ProductDetail = () => {
           </div>
         </div>
       </div>
+      {showCheckoutConfirm && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-md w-full shadow-2xl">
+            <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Confirm Purchase</h3>
+            <div className="space-y-4 mb-6">
+              <p className="text-gray-600 dark:text-gray-300">You are about to purchase:</p>
+              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 space-y-2">
+                <div className="flex justify-between items-center text-sm text-gray-800 dark:text-gray-200">
+                  <span>{product?.title} × {quantity}</span>
+                  <span className="font-medium">${(product!.price * quantity).toFixed(2)}</span>
+                </div>
+                <div className="border-t dark:border-gray-600 pt-2 mt-2 flex justify-between items-center font-semibold text-gray-900 dark:text-white">
+                  <span>Total</span>
+                  <span className="text-blue-500 dark:text-blue-400">${(product!.price * quantity).toFixed(2)}</span>
+                </div>
+              </div>
+              <p className="text-gray-500 dark:text-gray-400 text-sm">
+                By confirming, you agree to proceed with the purchase of this item.
+              </p>
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowCheckoutConfirm(false)}
+                className="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={processCheckout}
+                disabled={isBuyingNow}
+                className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 disabled:opacity-50 flex items-center justify-center gap-2"
+              >
+                {isBuyingNow ? (
+                  <>
+                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    <span>Processing...</span>
+                  </>
+                ) : (
+                  <>
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clipRule="evenodd" />
+                    </svg>
+                    <span>Confirm Purchase</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
