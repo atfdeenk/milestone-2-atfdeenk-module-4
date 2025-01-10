@@ -196,7 +196,7 @@ export const Products = () => {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-gray-800">Products</h1>
+        <h1 className="text-2xl font-bold text-gray-800 dark:text-white">Products</h1>
         <button
           onClick={() => setShowFilters(!showFilters)}
           className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 flex items-center gap-2"
@@ -236,7 +236,7 @@ export const Products = () => {
         <div className={showFilters ? "md:w-3/4" : "w-full"}>
           {loading ? (
             <div className="flex justify-center items-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 dark:border-white"></div>
             </div>
           ) : error ? (
             <div className="text-red-500 text-center">{error}</div>
@@ -250,7 +250,7 @@ export const Products = () => {
                     {filters.category && categories.find(c => c.id === filters.category) && 
                       ` in ${categories.find(c => c.id === filters.category)?.name}`
                     }
-                    <span className="text-gray-500 ml-2">
+                    <span className="text-gray-500 dark:text-gray-300 ml-2">
                       ({filteredProducts.length} products found)
                     </span>
                   </h2>
@@ -260,50 +260,48 @@ export const Products = () => {
               {/* Products Grid */}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredProducts.map((product) => (
-                  <div
+                  <Link
+                    to={`/products/${product.id}`}
                     key={product.id}
-                    className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300"
+                    className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-all duration-200 group relative"
                   >
-                    <Link to={`/products/${product.id}`} className="block relative">
+                    <div className="relative pb-[100%]">
                       <img
                         src={product.images[0]}
                         alt={product.title}
-                        className="w-full h-48 object-cover"
+                        className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
                         onError={(e) => {
                           const target = e.target as HTMLImageElement;
                           target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(product.title)}&background=random&size=200`;
                         }}
                       />
-                      <div className="absolute inset-0 bg-black opacity-0 hover:opacity-10 transition-opacity duration-300"></div>
-                    </Link>
-
+                      <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-10 transition-opacity duration-200"></div>
+                    </div>
                     <div className="p-4">
-                      <Link to={`/products/${product.id}`}>
-                        <h3 className="text-lg font-semibold mb-2 text-gray-800 hover:text-blue-600 transition-colors duration-200 line-clamp-1">
-                          {product.title}
-                        </h3>
-                      </Link>
-                      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
+                      <h3 className="text-lg font-semibold mb-2 text-gray-800 dark:text-white truncate group-hover:text-blue-500 dark:group-hover:text-blue-400 transition-colors duration-200">
+                        {product.title}
+                      </h3>
+                      <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">
                         {product.description}
                       </p>
                       <div className="flex justify-between items-center">
-                        <span className="text-lg font-bold text-blue-600">
+                        <span className="text-lg font-bold text-blue-600 dark:text-blue-400">
                           ${product.price.toLocaleString()}
                         </span>
-                        <span className="text-sm text-gray-500 bg-gray-100 px-2 py-1 rounded-full">
+                        <span className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 px-2 py-1 rounded-full">
                           {product.category.name}
                         </span>
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 ))}
               </div>
 
               {/* No Products Message */}
               {filteredProducts.length === 0 && (
                 <div className="text-center py-12">
-                  <h3 className="text-xl font-semibold text-gray-600">No products found</h3>
-                  <p className="text-gray-500 mt-2">
+                  <h3 className="text-xl font-semibold text-gray-600 dark:text-gray-300">No products found</h3>
+                  <p className="text-gray-500 dark:text-gray-300 mt-2">
                     Try adjusting your search or filter criteria
                   </p>
                 </div>

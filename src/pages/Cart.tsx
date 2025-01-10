@@ -35,18 +35,9 @@ export const Cart = () => {
     window.dispatchEvent(new Event('cartUpdated'));
   };
 
-  const removeItem = (id: number) => {
-    setLoading(true);
-    const newCart = cart.filter(item => item.id !== id);
+  const handleRemoveItem = (productId: number) => {
+    const newCart = cart.filter(item => item.id !== productId);
     updateCart(newCart);
-    
-    const message = document.createElement('div');
-    message.className = 'fixed bottom-4 right-4 bg-blue-500 text-white px-6 py-3 rounded-lg shadow-lg';
-    message.textContent = 'Item removed from cart';
-    document.body.appendChild(message);
-    
-    setTimeout(() => message.remove(), 2000);
-    setLoading(false);
   };
 
   const clearCart = () => {
@@ -271,12 +262,12 @@ export const Cart = () => {
                 ${(item.price * item.quantity).toFixed(2)}
               </div>
               <button
-                onClick={() => removeItem(item.id)}
+                onClick={() => handleRemoveItem(item.id)}
                 disabled={loading}
-                className="text-red-500 hover:text-red-600 p-2 rounded-full hover:bg-red-50 transition-colors duration-200"
+                className="text-red-500 hover:text-red-700"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                  <path fillRule="evenodd" d="M9 2a1 1 0 011 1v12a1 1 0 11-2 0V4a1 1 0 011-1zm7.707 3.293a1 1 0 010 1.414L9.414 9H17a1 1 0 110 2H9.414l1.293 1.293a1 1 0 01-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0z" clipRule="evenodd" />
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                 </svg>
               </button>
             </div>
