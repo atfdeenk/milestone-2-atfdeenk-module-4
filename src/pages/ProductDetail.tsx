@@ -11,6 +11,7 @@ export const ProductDetail = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [success, setSuccess] = useState('');
+  const isLoggedIn = localStorage.getItem('token') !== null;
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -34,6 +35,12 @@ export const ProductDetail = () => {
   }, [id]);
 
   const addToCart = () => {
+    if (!isLoggedIn) {
+      setError('Please login to add items to cart');
+      setTimeout(() => setError(''), 3000);
+      return;
+    }
+
     setIsAddingToCart(true);
     
     try {
@@ -201,22 +208,40 @@ export const ProductDetail = () => {
                 </div>
               </div>
 
-              <button
-                onClick={addToCart}
-                disabled={isAddingToCart}
-                className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600 transition-colors duration-200 flex items-center justify-center gap-2 disabled:opacity-50"
-              >
-                {isAddingToCart ? (
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                ) : (
-                  <>
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                      <path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3zM16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z" />
+              <div className="flex-1 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-600 group">
+                {!isLoggedIn ? (
+                  <Link
+                    to="/login"
+                    className="flex-1 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-600 group"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-white transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                     </svg>
-                    Add to Cart
-                  </>
+                    Login to Add to Cart
+                  </Link>
+                ) : (
+                  <button
+                    onClick={addToCart}
+                    disabled={loading || isAddingToCart}
+                    className="flex-1 px-6 py-3 bg-blue-500 dark:bg-blue-600 text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {isAddingToCart ? (
+                      <>
+                        <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                        <span>Adding to Cart...</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                        Add to Cart
+                      </>
+                    )}
+                  </button>
                 )}
-              </button>
+              </div>
+
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 w-full">

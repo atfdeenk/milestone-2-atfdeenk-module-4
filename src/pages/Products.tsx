@@ -244,15 +244,14 @@ export const Products = () => {
             <>
               {/* Search Results Info */}
               {(searchParams.get('search') || filters.category) && (
-                <div className="mb-6">
-                  <h2 className="text-xl font-semibold">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
                     {searchParams.get('search') && `Search results for "${searchParams.get('search')}"`}
-                    {filters.category && categories.find(c => c.id === filters.category) && 
-                      ` in ${categories.find(c => c.id === filters.category)?.name}`
-                    }
-                    <span className="text-gray-500 dark:text-gray-300 ml-2">
-                      ({filteredProducts.length} products found)
-                    </span>
+                    {filteredProducts.length > 0 && (
+                      <span className="text-gray-600 dark:text-gray-400 text-base font-normal ml-2">
+                        ({filteredProducts.length} products found)
+                      </span>
+                    )}
                   </h2>
                 </div>
               )}
