@@ -137,6 +137,10 @@ export const Products = () => {
                 src={product.images[0]}
                 alt={product.title}
                 className="w-full h-48 object-cover rounded-t-lg"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(product.title)}&background=random&size=200`;
+                }}
               />
             </Link>
             <div className="p-4">
