@@ -6,20 +6,22 @@ export const Navbar = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState('');
-  const [cartCount, setCartCount] = useState(0);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    const name = localStorage.getItem('userName');
+    const storedUserName = localStorage.getItem('userName');
     setIsLoggedIn(!!token);
-    setUserName(name || '');
+    if (storedUserName) {
+      setUserName(storedUserName);
+    }
 
     // Update cart count
     const updateCartCount = () => {
       const cart = JSON.parse(localStorage.getItem('cart') || '[]') as CartItem[];
       const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
-      setCartCount(totalQuantity);
+      setCartItems(cart);
     };
 
     updateCartCount();
@@ -59,18 +61,20 @@ export const Navbar = () => {
   };
 
   return (
-    <nav className="bg-white shadow-sm">
+    <nav className="bg-white shadow-sm sticky top-0 z-50">
       <div className="container mx-auto px-4">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo and Navigation Links */}
-          <div className="flex items-center space-x-8">
-            <Link to="/" className="text-xl font-bold text-blue-600">
-              ShopApp
+        <div className="flex items-center justify-between h-16">
+          {/* Logo and Brand */}
+          <div className="flex items-center">
+            <Link to="/" className="flex items-center space-x-2">
+              <span className="text-xl font-bold bg-gradient-to-r from-blue-500 to-blue-400 bg-clip-text text-transparent">
+                ShopApp
+              </span>
             </Link>
-            <div className="hidden md:flex space-x-4">
+            <div className="hidden md:flex items-center ml-6">
               <Link
                 to="/products"
-                className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
+                className="text-blue-500 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
               >
                 Products
               </Link>
@@ -89,9 +93,9 @@ export const Navbar = () => {
               />
               <button
                 type="submit"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-blue-500"
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600 transition-colors duration-200"
               >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                 </svg>
               </button>
@@ -99,52 +103,54 @@ export const Navbar = () => {
           </div>
 
           {/* User Actions */}
-          <div className="flex items-center space-x-4">
+          <div className="flex items-center space-x-6">
             <button
               onClick={handleCartClick}
-              className="relative p-2 text-gray-700 hover:text-blue-600"
+              className="relative p-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>
-              {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full">
-                  {cartCount}
+              {cartItems.length > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 flex items-center justify-center rounded-full animate-pulse">
+                  {cartItems.reduce((sum, item) => sum + item.quantity, 0)}
                 </span>
               )}
             </button>
 
             {isLoggedIn ? (
-              <div className="flex items-center space-x-4">
-                <div className="flex items-center space-x-2">
-                  <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
-                    <span className="text-blue-600 font-medium">
+              <div className="relative group">
+                <div className="flex items-center space-x-3 cursor-pointer">
+                  <div className="w-9 h-9 rounded-full bg-blue-500 flex items-center justify-center text-white">
+                    <span className="text-sm font-medium">
                       {userName.charAt(0).toUpperCase()}
                     </span>
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-sm font-medium text-gray-700">Welcome back,</span>
-                    <span className="text-sm font-semibold text-blue-600">{userName}</span>
+                    <span className="text-xs text-gray-500">Welcome back,</span>
+                    <span className="text-sm font-medium text-gray-700">{userName}</span>
                   </div>
                 </div>
-                <button
-                  onClick={handleLogout}
-                  className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-colors duration-200"
-                >
-                  Logout
-                </button>
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-1">
+                  <button
+                    onClick={handleLogout}
+                    className="block w-full text-left px-4 py-2 text-sm bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200"
+                  >
+                    Logout
+                  </button>
+                </div>
               </div>
             ) : (
               <div className="flex items-center space-x-2">
                 <Link
                   to="/register"
-                  className="bg-white text-blue-600 border border-blue-600 px-4 py-2 rounded-lg hover:bg-blue-50 transition-colors duration-200"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200 text-sm font-medium"
                 >
                   Register
                 </Link>
                 <Link
                   to="/login"
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors duration-200"
+                  className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors duration-200 text-sm font-medium"
                 >
                   Login
                 </Link>

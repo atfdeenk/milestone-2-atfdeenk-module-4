@@ -34,6 +34,57 @@ export const Products = () => {
 
   const [filters, setFilters] = useState<FilterState>(initialFilters);
 
+  const isValidImageUrl = (url: string) => {
+    try {
+      return url && 
+        (url.startsWith('http://') || url.startsWith('https://')) &&
+        !url.includes('undefined') &&
+        !url.includes('null');
+    } catch {
+      return false;
+    }
+  };
+
+  const getProductImageScore = (product: Product) => {
+    if (!product.images || product.images.length === 0) return 0;
+    const validImages = product.images.filter(isValidImageUrl);
+    return validImages.length;
+  };
+
+  const sortProducts = (products: Product[], sortBy: string, sortOrder: 'asc' | 'desc') => {
+    return [...products].sort((a, b) => {
+      let comparison = 0;
+
+      // Apply the selected sort first
+      switch (sortBy) {
+        case 'price':
+          comparison = a.price - b.price;
+          break;
+        case 'title':
+          comparison = a.title.localeCompare(b.title);
+          break;
+        case 'createdAt':
+          const dateA = new Date(a.createdAt || '').getTime();
+          const dateB = new Date(b.createdAt || '').getTime();
+          comparison = dateA - dateB;
+          break;
+        default:
+          const defaultDateA = new Date(a.createdAt || '').getTime();
+          const defaultDateB = new Date(b.createdAt || '').getTime();
+          comparison = defaultDateB - defaultDateA; // Default to newest first
+      }
+
+      // If primary sort criteria are equal, then sort by image validity
+      if (comparison === 0) {
+        const aScore = getProductImageScore(a);
+        const bScore = getProductImageScore(b);
+        return bScore - aScore; // Higher score first
+      }
+      
+      return sortOrder === 'asc' ? comparison : -comparison;
+    });
+  };
+
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -58,8 +109,11 @@ export const Products = () => {
         const response = await fetch(url);
         if (!response.ok) throw new Error('Failed to fetch products');
         const data = await response.json();
-        setProducts(data);
-        setFilteredProducts(data); // Set initial filtered products to all products
+        
+        // Initial sort by creation date (newest first)
+        const sortedProducts = sortProducts(data, 'createdAt', 'desc');
+        setProducts(sortedProducts);
+        setFilteredProducts(sortedProducts);
       } catch (err) {
         setError('Failed to load products. Please try again later.');
         console.error('Error fetching products:', err);
@@ -98,28 +152,9 @@ export const Products = () => {
       });
     }
 
-    // Apply sorting
-    filtered.sort((a, b) => {
-      let comparison = 0;
-      switch (filters.sortBy) {
-        case 'price':
-          comparison = a.price - b.price;
-          break;
-        case 'title':
-          comparison = a.title.localeCompare(b.title);
-          break;
-        case 'createdAt':
-          const dateA = new Date(a.updatedAt).getTime();
-          const dateB = new Date(b.updatedAt).getTime();
-          comparison = dateA - dateB;
-          break;
-        default:
-          comparison = 0;
-      }
-      return filters.sortOrder === 'asc' ? comparison : -comparison;
-    });
-
-    setFilteredProducts(filtered);
+    // Apply final sorting
+    const sortedFiltered = sortProducts(filtered, filters.sortBy, filters.sortOrder);
+    setFilteredProducts(sortedFiltered);
   }, [products, searchParams, filters]);
 
   const handleFilterChange = (newFilters: FilterState) => {
