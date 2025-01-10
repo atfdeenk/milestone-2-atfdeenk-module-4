@@ -1,16 +1,25 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { CartItem } from '../types';
 import { useTheme } from '../context/ThemeContext';
 
 export const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { theme, toggleTheme } = useTheme();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState('');
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  const isProductsPage = location.pathname === '/products';
+
+  const handleBack = () => {
+    navigate(-1);
+  };
 
   const fetchProfile = useCallback(async () => {
     const token = localStorage.getItem('token');
@@ -171,7 +180,6 @@ export const Navbar = () => {
             <button
               onClick={toggleTheme}
               className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200"
-              aria-label="Toggle dark mode"
             >
               {theme === 'dark' ? (
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -238,10 +246,10 @@ export const Navbar = () => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="flex md:hidden items-center space-x-4">
+          <div className="flex md:hidden items-center space-x-2">
             <button
               onClick={handleCartClick}
-              className="relative p-2 bg-blue-500 dark:bg-blue-600 text-white rounded-lg hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors duration-200"
+              className="relative p-1.5 bg-blue-500 dark:bg-blue-600 text-white rounded-lg hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors duration-200"
             >
               <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
@@ -253,40 +261,68 @@ export const Navbar = () => {
               )}
             </button>
             <button
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200"
+              onClick={toggleTheme}
+              className="p-1.5 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200"
             >
-              <svg
-                className="h-6 w-6 text-gray-700 dark:text-gray-200"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                {isMobileMenuOpen ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 6h16M4 12h16M4 18h16"
-                  />
-                )}
+              {theme === 'dark' ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                </svg>
+              )}
+            </button>
+            <button
+              onClick={() => setIsSearchOpen(!isSearchOpen)}
+              className="p-1.5 text-gray-700 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200"
+            >
+              <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
             </button>
+            {isLoggedIn ? (
+              <div className="relative">
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="w-8 h-8 rounded-full bg-blue-500 dark:bg-blue-600 flex items-center justify-center text-white"
+                >
+                  <span className="text-sm font-medium">
+                    {userName.charAt(0).toUpperCase()}
+                  </span>
+                </button>
+                {isProfileOpen && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg dark:shadow-gray-700/50 py-1">
+                    <button
+                      onClick={() => {
+                        handleLogout();
+                        setIsProfileOpen(false);
+                      }}
+                      className="block w-full text-left px-4 py-2 text-sm bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors duration-200"
+                    >
+                      Logout
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <Link
+                to="/login"
+                className="p-1.5 text-gray-700 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+              </Link>
+            )}
           </div>
         </div>
 
-        {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-gray-200 dark:border-gray-600">
-            {/* Mobile Search */}
-            <form onSubmit={handleSearch} className="mb-4">
+        {/* Mobile Search Bar */}
+        {isSearchOpen && (
+          <div className="md:hidden py-4 px-4 border-t border-gray-200 dark:border-gray-600">
+            <form onSubmit={handleSearch}>
               <div className="relative">
                 <input
                   type="text"
@@ -305,82 +341,6 @@ export const Navbar = () => {
                 </button>
               </div>
             </form>
-
-            {/* Mobile Navigation Links */}
-            <div className="space-y-4">
-              <Link
-                to="/products"
-                className="block text-blue-500 dark:text-blue-400 hover:text-blue-600 dark:hover:text-blue-300 px-3 py-2 rounded-md text-base font-medium"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                Products
-              </Link>
-
-              <div className="flex items-center justify-between px-3">
-                <button
-                  onClick={toggleTheme}
-                  className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-600 transition-colors duration-200"
-                >
-                  {theme === 'dark' ? (
-                    <div className="flex items-center space-x-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                      </svg>
-                      <span className="text-gray-700 dark:text-gray-200">Light Mode</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center space-x-2">
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                      </svg>
-                      <span className="text-gray-700 dark:text-gray-200">Dark Mode</span>
-                    </div>
-                  )}
-                </button>
-              </div>
-
-              {isLoggedIn ? (
-                <div className="px-3 py-2">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-9 h-9 rounded-full bg-blue-500 dark:bg-blue-600 flex items-center justify-center text-white">
-                      <span className="text-sm font-medium">
-                        {userName.charAt(0).toUpperCase()}
-                      </span>
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-xs text-gray-500 dark:text-gray-400">Welcome back,</span>
-                      <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{userName}</span>
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => {
-                      handleLogout();
-                      setIsMobileMenuOpen(false);
-                    }}
-                    className="mt-4 w-full text-center px-4 py-2 text-sm bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors duration-200 rounded-lg"
-                  >
-                    Logout
-                  </button>
-                </div>
-              ) : (
-                <div className="flex flex-col space-y-2 px-3">
-                  <Link
-                    to="/login"
-                    className="text-center text-gray-700 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400 py-2"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Login
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="text-center bg-blue-500 dark:bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors duration-200"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Register
-                  </Link>
-                </div>
-              )}
-            </div>
           </div>
         )}
       </div>
