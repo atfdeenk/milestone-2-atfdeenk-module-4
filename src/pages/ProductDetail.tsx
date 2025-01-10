@@ -22,7 +22,8 @@ export const ProductDetail = () => {
         setProduct(data);
         setError('');
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Failed to fetch product');
+        const errorMessage = err instanceof Error ? err.message : 'Failed to fetch product';
+        setError(errorMessage);
         setProduct(null);
       } finally {
         setLoading(false);
@@ -66,7 +67,8 @@ export const ProductDetail = () => {
       setSuccess('Product added to cart!');
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
-      setError('Failed to add product to cart. Please try again.');
+      const errorMessage = err instanceof Error ? err.message : 'Failed to add product to cart';
+      setError(errorMessage);
       setTimeout(() => setError(''), 3000);
     } finally {
       setIsAddingToCart(false);
@@ -87,6 +89,11 @@ export const ProductDetail = () => {
     return (
       <div className="container mx-auto px-4 py-12">
         <div className="max-w-2xl mx-auto text-center">
+          {success && (
+            <div className="mb-4 p-4 bg-green-100 text-green-700 rounded-lg">
+              {success}
+            </div>
+          )}
           <h2 className="text-2xl font-bold mb-4">Product Not Found</h2>
           <p className="text-gray-600 mb-8">{error || 'The product you are looking for does not exist.'}</p>
           <Link
