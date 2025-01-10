@@ -28,7 +28,7 @@ export const Products = () => {
       min: 0,
       max: 0,
     },
-    sortBy: 'createdAt',
+    sortBy: '',
     sortOrder: 'desc',
   };
 
@@ -55,33 +55,45 @@ export const Products = () => {
     return [...products].sort((a, b) => {
       let comparison = 0;
 
-      // Apply the selected sort first
-      switch (sortBy) {
-        case 'price':
-          comparison = a.price - b.price;
-          break;
-        case 'title':
-          comparison = a.title.localeCompare(b.title);
-          break;
-        case 'createdAt':
-          const dateA = new Date(a.createdAt || '').getTime();
-          const dateB = new Date(b.createdAt || '').getTime();
-          comparison = dateA - dateB;
-          break;
-        default:
-          const defaultDateA = new Date(a.createdAt || '').getTime();
-          const defaultDateB = new Date(b.createdAt || '').getTime();
-          comparison = defaultDateB - defaultDateA; // Default to newest first
-      }
-
-      // If primary sort criteria are equal, then sort by image validity
-      if (comparison === 0) {
+      if (!sortBy || sortBy === '') {
+        // If no sort is selected, prioritize by valid images first
         const aScore = getProductImageScore(a);
         const bScore = getProductImageScore(b);
-        return bScore - aScore; // Higher score first
+        comparison = bScore - aScore; // Higher score first
+        
+        // If image scores are equal, then sort by creation date
+        if (comparison === 0) {
+          const dateA = new Date(a.createdAt || '').getTime();
+          const dateB = new Date(b.createdAt || '').getTime();
+          comparison = dateB - dateA; // Newest first
+        }
+      } else {
+        // Apply the selected sort
+        switch (sortBy) {
+          case 'price':
+            comparison = a.price - b.price;
+            break;
+          case 'title':
+            comparison = a.title.localeCompare(b.title);
+            break;
+          case 'createdAt':
+            const dateA = new Date(a.createdAt || '').getTime();
+            const dateB = new Date(b.createdAt || '').getTime();
+            comparison = dateA - dateB;
+            break;
+          default:
+            comparison = 0;
+        }
+
+        // If primary sort criteria are equal, then sort by image validity
+        if (comparison === 0) {
+          const aScore = getProductImageScore(a);
+          const bScore = getProductImageScore(b);
+          comparison = bScore - aScore; // Higher score first
+        }
       }
       
-      return sortOrder === 'asc' ? comparison : -comparison;
+      return sortBy === '' ? comparison : (sortOrder === 'asc' ? comparison : -comparison);
     });
   };
 
