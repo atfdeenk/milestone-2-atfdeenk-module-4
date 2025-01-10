@@ -245,13 +245,37 @@ export const Products = () => {
               {/* Search Results Info */}
               {(searchParams.get('search') || filters.category) && (
                 <div className="flex justify-between items-center mb-4">
-                  <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-                    {searchParams.get('search') && `Search results for "${searchParams.get('search')}"`}
-                    {filteredProducts.length > 0 && (
-                      <span className="text-gray-600 dark:text-gray-400 text-base font-normal ml-2">
-                        ({filteredProducts.length} products found)
-                      </span>
-                    )}
+                  <h2 className="text-xl font-semibold mb-4">
+                    <span>
+                      {searchParams.get('search') ? (
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <span className="text-gray-800 dark:text-white inline-flex items-center gap-2 flex-wrap">
+                            <span className="whitespace-nowrap">
+                              Search results for "
+                              <span className="text-blue-600 dark:text-blue-400">{searchParams.get('search')}</span>
+                              "
+                            </span>
+                            <span className="text-sm text-gray-600 dark:text-gray-300 whitespace-nowrap">
+                              ({filteredProducts.length} {filteredProducts.length === 1 ? 'product' : 'products'} found)
+                            </span>
+                            <button
+                              onClick={() => {
+                                searchParams.delete('search');
+                                setSearchParams(searchParams);
+                              }}
+                              className="p-1 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-full transition-colors duration-200 inline-flex items-center"
+                              title="Clear search"
+                            >
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500 dark:text-gray-300" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                              </svg>
+                            </button>
+                          </span>
+                        </div>
+                      ) : (
+                        "All Products"
+                      )}
+                    </span>
                   </h2>
                 </div>
               )}
