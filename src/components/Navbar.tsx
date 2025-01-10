@@ -199,16 +199,21 @@ export const Navbar = () => {
 
             {isLoggedIn ? (
               <div className="relative group">
-                <button className="flex items-center space-x-1 text-gray-700 dark:text-gray-200 hover:text-blue-500 dark:hover:text-blue-400">
-                  <span>{userName}</span>
-                  <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                    <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
-                  </svg>
-                </button>
-                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-lg shadow-lg py-1 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-200">
+                <div className="flex items-center space-x-3 cursor-pointer">
+                  <div className="w-9 h-9 rounded-full bg-blue-500 dark:bg-blue-600 flex items-center justify-center text-white">
+                    <span className="text-sm font-medium">
+                      {userName.charAt(0).toUpperCase()}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-xs text-gray-500 dark:text-gray-400">Welcome back,</span>
+                    <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{userName}</span>
+                  </div>
+                </div>
+                <div className="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-800 rounded-lg shadow-lg dark:shadow-gray-700/50 py-1 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 transform group-hover:translate-y-0 translate-y-1">
                   <button
                     onClick={handleLogout}
-                    className="block w-full text-left px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-600"
+                    className="block w-full text-left px-4 py-2 text-sm bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors duration-200"
                   >
                     Logout
                   </button>
@@ -337,13 +342,23 @@ export const Navbar = () => {
 
               {isLoggedIn ? (
                 <div className="px-3 py-2">
-                  <div className="text-gray-700 dark:text-gray-200 mb-2">{userName}</div>
+                  <div className="flex items-center space-x-3">
+                    <div className="w-9 h-9 rounded-full bg-blue-500 dark:bg-blue-600 flex items-center justify-center text-white">
+                      <span className="text-sm font-medium">
+                        {userName.charAt(0).toUpperCase()}
+                      </span>
+                    </div>
+                    <div className="flex flex-col">
+                      <span className="text-xs text-gray-500 dark:text-gray-400">Welcome back,</span>
+                      <span className="text-sm font-medium text-gray-700 dark:text-gray-200">{userName}</span>
+                    </div>
+                  </div>
                   <button
                     onClick={() => {
                       handleLogout();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="text-red-500 hover:text-red-600 dark:text-red-400 dark:hover:text-red-300"
+                    className="mt-4 w-full text-center px-4 py-2 text-sm bg-blue-500 dark:bg-blue-600 text-white hover:bg-blue-600 dark:hover:bg-blue-500 transition-colors duration-200 rounded-lg"
                   >
                     Logout
                   </button>
