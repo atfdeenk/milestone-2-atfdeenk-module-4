@@ -53,7 +53,11 @@ export const Login = () => {
       localStorage.setItem('userName', userData.name);
       localStorage.setItem('userEmail', userData.email);
 
-      setSuccess('Login successful! Redirecting...');
+      setSuccess('Login successful!');
+      // Dispatch custom event for profile update
+      window.dispatchEvent(new Event('profileUpdated'));
+      
+      // Navigate after a short delay to show success message
       setTimeout(() => {
         navigate('/products');
       }, 1000);

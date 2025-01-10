@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { CartItem } from '../types';
 
@@ -9,13 +9,36 @@ export const Navbar = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
 
-  useEffect(() => {
+  const fetchProfile = useCallback(async () => {
     const token = localStorage.getItem('token');
     const storedUserName = localStorage.getItem('userName');
+    
     setIsLoggedIn(!!token);
     if (storedUserName) {
       setUserName(storedUserName);
     }
+
+    if (token && !storedUserName) {
+      try {
+        const response = await fetch('https://api.escuelajs.co/api/v1/auth/profile', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        
+        if (response.ok) {
+          const userData = await response.json();
+          localStorage.setItem('userName', userData.name);
+          setUserName(userData.name);
+        }
+      } catch (error) {
+        console.error('Failed to fetch profile:', error);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchProfile();
 
     // Update cart count
     const updateCartCount = () => {
@@ -23,13 +46,19 @@ export const Navbar = () => {
       setCartItems(cart);
     };
 
+    const handleProfileUpdate = () => {
+      fetchProfile();
+    };
+
     updateCartCount();
     window.addEventListener('cartUpdated', updateCartCount);
+    window.addEventListener('profileUpdated', handleProfileUpdate);
 
     return () => {
       window.removeEventListener('cartUpdated', updateCartCount);
+      window.removeEventListener('profileUpdated', handleProfileUpdate);
     };
-  }, []);
+  }, [fetchProfile]);
 
   const handleLogout = () => {
     localStorage.removeItem('token');

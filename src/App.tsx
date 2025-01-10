@@ -6,7 +6,6 @@ import { Products } from './pages/Products';
 import { ProductDetail } from './pages/ProductDetail';
 import { Cart } from './pages/Cart';
 import { Receipt } from './pages/Receipt';
-import './App.css';
 
 interface PrivateRouteProps {
   children: React.ReactNode;
@@ -27,14 +26,7 @@ export const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetail />} />
-          <Route
-            path="/cart"
-            element={
-              <PrivateRoute>
-                <Cart />
-              </PrivateRoute>
-            }
-          />
+          <Route path="/cart" element={<Cart />} />
           <Route
             path="/receipt"
             element={
