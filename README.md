@@ -22,8 +22,8 @@ ShopSmart is a modern e-commerce platform built with React, TypeScript, and Tail
 ### Product Detail & Purchase Flow
 <div style="display: flex; gap: 10px; flex-wrap: wrap;">
   <img src="./src/assets/shopsmart-product-detail-light.png" width="400" alt="Product Detail Light">
-  <img src="./src/assets/shopsmart-confirm-purchase-light.png" width="400" alt="Purchase Confirmation">
   <img src="./src/assets/shopsmart-shopping-cart-light.png" width="400" alt="Shopping Cart">
+  <img src="./src/assets/shopsmart-confirm-purchase-light.png" width="400" alt="Purchase Confirmation">
   <img src="./src/assets/shopsmart-receipt-light.png" width="400" alt="Receipt">
 </div>
 
