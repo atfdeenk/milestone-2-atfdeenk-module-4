@@ -80,7 +80,7 @@ export const Cart = () => {
         price: item.price,
         quantity: item.quantity
       })),
-      totalPrice,
+      totalPrice: cart.reduce((sum, item) => sum + item.price * item.quantity, 0),
       orderDate,
       orderNumber
     };
@@ -105,8 +105,6 @@ export const Cart = () => {
     updateCart(newCart);
     setLoading(false);
   };
-
-  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
   if (cart.length === 0) {
     return (
@@ -254,7 +252,7 @@ export const Cart = () => {
       <div className="mt-8 bg-white p-6 rounded-lg shadow-sm">
         <div className="flex justify-between items-center text-xl font-semibold mb-6">
           <span>Total:</span>
-          <span>${totalPrice.toFixed(2)}</span>
+          <span>${cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2)}</span>
         </div>
         
         <div className="flex flex-col sm:flex-row gap-4">

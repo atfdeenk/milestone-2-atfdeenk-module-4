@@ -65,10 +65,10 @@ export const ProductDetail = () => {
       setTimeout(() => message.remove(), 2000);
 
       setQuantity(1);
-    } catch (error) {
+    } catch (err) {
       const message = document.createElement('div');
       message.className = 'fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
-      message.textContent = 'Failed to add to cart';
+      message.textContent = err instanceof Error ? err.message : 'Failed to add to cart';
       document.body.appendChild(message);
       setTimeout(() => message.remove(), 2000);
     } finally {

@@ -1,18 +1,23 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 
+interface CartItem {
+  quantity: number;
+}
+
 export const Navbar = () => {
   const navigate = useNavigate();
-  const [cartCount, setCartCount] = useState(0);
-  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [cartCount, setCartCount] = useState<number>(0);
+  const [showLoginPrompt, setShowLoginPrompt] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const isLoggedIn = localStorage.getItem('token') !== null;
   const userName = localStorage.getItem('userName') || '';
+  const userRole = localStorage.getItem('userRole');
 
   useEffect(() => {
     const updateCartCount = () => {
-      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-      const count = cart.reduce((sum: number, item: { quantity: number }) => sum + item.quantity, 0);
+      const cart = JSON.parse(localStorage.getItem('cart') || '[]') as CartItem[];
+      const count = cart.reduce((sum: number, item: CartItem) => sum + item.quantity, 0);
       setCartCount(count);
     };
 
@@ -33,10 +38,11 @@ export const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('userName');
-    window.location.href = '/login';
+    localStorage.removeItem('userRole');
+    navigate('/login');
   };
 
-  const handleSearch = (e: React.FormEvent) => {
+  const handleSearch = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
@@ -72,6 +78,12 @@ export const Navbar = () => {
           </form>
           
           <div className="flex items-center space-x-4">
+            {userRole === 'admin' && (
+              <Link to="/admin" className="text-gray-600 hover:text-blue-600">
+                Admin
+              </Link>
+            )}
+            
             <Link to="/categories" className="text-gray-600 hover:text-blue-600">
               Categories
             </Link>

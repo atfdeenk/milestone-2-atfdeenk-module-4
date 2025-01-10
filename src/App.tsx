@@ -7,14 +7,18 @@ import { ProductDetail } from './pages/ProductDetail';
 import { Categories } from './pages/Categories';
 import { Cart } from './pages/Cart';
 import { Receipt } from './pages/Receipt';
-import './App.css'
+import './App.css';
 
-const PrivateRoute = ({ children }: { children: React.ReactNode }) => {
+interface PrivateRouteProps {
+  children: React.ReactNode;
+}
+
+const PrivateRoute = ({ children }: PrivateRouteProps) => {
   const isAuthenticated = localStorage.getItem('token');
   return isAuthenticated ? <>{children}</> : <Navigate to="/login" />;
 };
 
-function App() {
+export const App = () => {
   return (
     <Router>
       <div className="min-h-screen bg-gray-50">
@@ -25,21 +29,25 @@ function App() {
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetail />} />
           <Route path="/categories" element={<Categories />} />
-          <Route path="/cart" element={
-            <PrivateRoute>
-              <Cart />
-            </PrivateRoute>
-          } />
-          <Route path="/receipt" element={
-            <PrivateRoute>
-              <Receipt />
-            </PrivateRoute>
-          } />
+          <Route
+            path="/cart"
+            element={
+              <PrivateRoute>
+                <Cart />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/receipt"
+            element={
+              <PrivateRoute>
+                <Receipt />
+              </PrivateRoute>
+            }
+          />
           <Route path="/" element={<Navigate to="/products" />} />
         </Routes>
       </div>
     </Router>
   );
-}
-
-export default App;
+};
