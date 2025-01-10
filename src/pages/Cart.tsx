@@ -277,7 +277,7 @@ export const Cart = () => {
 
       <div className="mt-8 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
         <div className="flex justify-between items-center text-xl font-semibold mb-6">
-          <span>Total:</span>
+          <span className="text-gray-800 dark:text-white">Total:</span>
           <span className="text-gray-900 dark:text-white">${cart.reduce((sum, item) => sum + item.price * item.quantity, 0).toFixed(2)}</span>
         </div>
         
