@@ -150,10 +150,10 @@ export const ProductDetail = () => {
   return (
     <div className="container mx-auto px-4 py-12">
       <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col lg:flex-row items-start justify-between gap-12">
+        <div className="flex flex-col lg:flex-row items-start justify-between gap-8">
           {/* Image Gallery */}
-          <div className="lg:w-1/2 sticky top-4">
-            <div className="aspect-square mb-6">
+          <div className="w-full lg:w-1/2 lg:sticky lg:top-4">
+            <div className="aspect-square mb-4 lg:mb-6">
               <img
                 src={product.images[selectedImage]}
                 alt={product.title}
@@ -161,7 +161,7 @@ export const ProductDetail = () => {
               />
             </div>
             {product.images.length > 1 && (
-              <div className="grid grid-cols-4 gap-3">
+              <div className="grid grid-cols-4 gap-2 lg:gap-3">
                 {product.images.map((image, index) => (
                   <button
                     key={index}
@@ -182,9 +182,9 @@ export const ProductDetail = () => {
           </div>
 
           {/* Product Info */}
-          <div className="lg:w-1/2 flex flex-col items-center text-center lg:items-start lg:text-left space-y-8">
+          <div className="w-full lg:w-1/2 flex flex-col space-y-6">
             <div className="w-full">
-              <nav className="flex mb-6 text-sm justify-center lg:justify-start">
+              <nav className="flex mb-4 lg:mb-6 text-sm">
                 <Link to="/products" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Products</Link>
                 <span className="mx-2 text-gray-500 dark:text-gray-400">/</span>
                 <Link to={`/categories`} className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
@@ -192,19 +192,19 @@ export const ProductDetail = () => {
                 </Link>
               </nav>
 
-              <h1 className="text-4xl font-bold mb-6 text-gray-900 dark:text-white">{product.title}</h1>
+              <h1 className="text-3xl lg:text-4xl font-bold mb-4 lg:mb-6 text-gray-900 dark:text-white">{product.title}</h1>
               
-              <div className="prose prose-lg mb-8 max-w-prose mx-auto lg:mx-0">
+              <div className="prose prose-lg mb-6 lg:mb-8">
                 <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{product.description}</p>
               </div>
             </div>
 
-            <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-8 mb-8 w-full shadow-sm">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-6">
-                <div className="text-center sm:text-left">
-                  <span className="text-4xl font-bold text-blue-500 dark:text-blue-400">${product.price}</span>
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-6 lg:p-8 w-full shadow-sm">
+              <div className="flex flex-col space-y-6 lg:space-y-0 lg:flex-row lg:items-center lg:justify-between lg:gap-6 mb-6">
+                <div>
+                  <span className="text-3xl lg:text-4xl font-bold text-blue-500 dark:text-blue-400">${product.price}</span>
                   {product.price > 50 && (
-                    <span className="ml-3 inline-block bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 text-sm px-3 py-1.5 rounded-full font-medium">
+                    <span className="block lg:inline-block mt-2 lg:mt-0 lg:ml-3 bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 text-sm px-3 py-1.5 rounded-full font-medium">
                       Free Shipping
                     </span>
                   )}
@@ -245,9 +245,9 @@ export const ProductDetail = () => {
                 {!isLoggedIn ? (
                   <Link
                     to="/login"
-                    className="w-full px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-600 group"
+                    className="w-full px-6 py-4 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:bg-gray-200 dark:hover:bg-gray-600 group text-lg"
                   >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-600 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-white transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-gray-600 dark:text-gray-300 group-hover:text-gray-800 dark:group-hover:text-white transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1" />
                     </svg>
                     Login to Purchase
@@ -257,16 +257,16 @@ export const ProductDetail = () => {
                     <button
                       onClick={handleBuyNow}
                       disabled={loading || isBuyingNow || isAddingToCart}
-                      className="w-full px-6 py-3 bg-green-500 dark:bg-green-600 text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:bg-green-600 dark:hover:bg-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full px-6 py-4 bg-green-500 dark:bg-green-600 text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:bg-green-600 dark:hover:bg-green-500 disabled:opacity-50 disabled:cursor-not-allowed text-lg font-medium"
                     >
                       {isBuyingNow ? (
                         <>
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
                           <span>Processing...</span>
                         </>
                       ) : (
                         <>
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                           </svg>
                           Buy Now
@@ -277,16 +277,16 @@ export const ProductDetail = () => {
                     <button
                       onClick={addToCart}
                       disabled={loading || isAddingToCart || isBuyingNow}
-                      className="w-full px-6 py-3 bg-blue-500 dark:bg-blue-600 text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-full px-6 py-4 bg-blue-500 dark:bg-blue-600 text-white rounded-lg transition-all duration-200 flex items-center justify-center gap-2 hover:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-50 disabled:cursor-not-allowed text-lg font-medium"
                     >
                       {isAddingToCart ? (
                         <>
-                          <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                          <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white"></div>
                           <span>Adding to Cart...</span>
                         </>
                       ) : (
                         <>
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                           </svg>
                           Add to Cart
@@ -296,13 +296,12 @@ export const ProductDetail = () => {
                   </>
                 )}
               </div>
-
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 w-full">
+            <div className="flex w-full">
               <Link
                 to="/products"
-                className="flex-1 text-center bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white px-8 py-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200 text-lg font-medium hover:shadow-lg transform hover:-translate-y-0.5"
+                className="w-full text-center bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white px-6 py-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200 text-lg font-medium hover:shadow-lg transform hover:-translate-y-0.5"
               >
                 Continue Shopping
               </Link>
@@ -310,16 +309,17 @@ export const ProductDetail = () => {
           </div>
         </div>
       </div>
+
       {showCheckoutConfirm && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-md w-full shadow-2xl">
+          <div className="bg-white dark:bg-gray-800 rounded-xl p-6 max-w-md w-full mx-4 shadow-2xl">
             <h3 className="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Confirm Purchase</h3>
             <div className="space-y-4 mb-6">
               <p className="text-gray-600 dark:text-gray-300">You are about to purchase:</p>
               <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-4 space-y-2">
                 <div className="flex justify-between items-center text-sm text-gray-800 dark:text-gray-200">
-                  <span>{product?.title} × {quantity}</span>
-                  <span className="font-medium">${(product!.price * quantity).toFixed(2)}</span>
+                  <span className="break-words flex-1 mr-4">{product?.title} × {quantity}</span>
+                  <span className="font-medium whitespace-nowrap">${(product!.price * quantity).toFixed(2)}</span>
                 </div>
                 <div className="border-t dark:border-gray-600 pt-2 mt-2 flex justify-between items-center font-semibold text-gray-900 dark:text-white">
                   <span>Total</span>
@@ -333,14 +333,14 @@ export const ProductDetail = () => {
             <div className="flex gap-3">
               <button
                 onClick={() => setShowCheckoutConfirm(false)}
-                className="flex-1 px-4 py-2 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
+                className="flex-1 px-4 py-3 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200 font-medium"
               >
                 Cancel
               </button>
               <button
                 onClick={processCheckout}
                 disabled={isBuyingNow}
-                className="flex-1 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 disabled:opacity-50 flex items-center justify-center gap-2"
+                className="flex-1 px-4 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors duration-200 disabled:opacity-50 flex items-center justify-center gap-2 font-medium"
               >
                 {isBuyingNow ? (
                   <>
