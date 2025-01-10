@@ -10,6 +10,7 @@ export const ProductDetail = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [success, setSuccess] = useState('');
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -31,46 +32,42 @@ export const ProductDetail = () => {
     fetchProduct();
   }, [id]);
 
-  const addToCart = async () => {
-    if (!product) return;
-
+  const addToCart = () => {
+    setIsAddingToCart(true);
+    
     try {
-      setIsAddingToCart(true);
-      const isLoggedIn = localStorage.getItem('token') !== null;
-      if (!isLoggedIn) {
-        const message = document.createElement('div');
-        message.className = 'fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
-        message.textContent = 'Please login to add items to cart';
-        document.body.appendChild(message);
-        setTimeout(() => message.remove(), 3000);
-        return;
-      }
-
-      const cart = JSON.parse(localStorage.getItem('cart') || '[]');
-      const existingItem = cart.find((item: Product & { quantity: number }) => item.id === product.id);
-
+      if (!product) return;
+      
+      // Update main cart
+      const existingCart = JSON.parse(localStorage.getItem('cart') || '[]');
+      const existingItem = existingCart.find((item: Product & { quantity: number }) => item.id === product.id);
+      
+      let newCart;
       if (existingItem) {
-        existingItem.quantity += quantity;
+        newCart = existingCart.map((item: Product & { quantity: number }) =>
+          item.id === product.id
+            ? { ...item, quantity: item.quantity + quantity }
+            : item
+        );
       } else {
-        cart.push({ ...product, quantity });
+        newCart = [...existingCart, { ...product, quantity }];
       }
-
-      localStorage.setItem('cart', JSON.stringify(cart));
+      
+      localStorage.setItem('cart', JSON.stringify(newCart));
+      
+      // Also update user-specific cart if logged in
+      const userEmail = localStorage.getItem('userEmail');
+      if (userEmail) {
+        const userCartKey = `cart_${userEmail}`;
+        localStorage.setItem(userCartKey, JSON.stringify(newCart));
+      }
+      
       window.dispatchEvent(new Event('cartUpdated'));
-
-      const message = document.createElement('div');
-      message.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
-      message.textContent = `Added ${quantity} item${quantity > 1 ? 's' : ''} to cart`;
-      document.body.appendChild(message);
-      setTimeout(() => message.remove(), 2000);
-
-      setQuantity(1);
+      setSuccess('Product added to cart!');
+      setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
-      const message = document.createElement('div');
-      message.className = 'fixed bottom-4 right-4 bg-red-500 text-white px-6 py-3 rounded-lg shadow-lg z-50';
-      message.textContent = err instanceof Error ? err.message : 'Failed to add to cart';
-      document.body.appendChild(message);
-      setTimeout(() => message.remove(), 2000);
+      setError('Failed to add product to cart. Please try again.');
+      setTimeout(() => setError(''), 3000);
     } finally {
       setIsAddingToCart(false);
     }

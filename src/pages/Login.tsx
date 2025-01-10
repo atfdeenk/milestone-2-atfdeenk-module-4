@@ -52,9 +52,16 @@ export const Login = () => {
       const userData = await userResponse.json();
       localStorage.setItem('userName', userData.name);
       localStorage.setItem('userEmail', userData.email);
+      
+      // Restore user's cart data
+      const userCartKey = `cart_${userData.email}`;
+      const savedCart = localStorage.getItem(userCartKey);
+      if (savedCart) {
+        localStorage.setItem('cart', savedCart);
+        window.dispatchEvent(new Event('cartUpdated'));
+      }
 
       setSuccess('Login successful!');
-      // Dispatch custom event for profile update
       window.dispatchEvent(new Event('profileUpdated'));
       
       // Navigate after a short delay to show success message

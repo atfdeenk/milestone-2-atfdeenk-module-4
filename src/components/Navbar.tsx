@@ -37,20 +37,22 @@ export const Navbar = () => {
     }
   }, []);
 
+  const updateCartCount = useCallback(() => {
+    const userEmail = localStorage.getItem('userEmail');
+    const cartKey = userEmail ? `cart_${userEmail}` : 'cart';
+    const cart = JSON.parse(localStorage.getItem(cartKey) || '[]') as CartItem[];
+    setCartItems(cart);
+  }, []);
+
   useEffect(() => {
     fetchProfile();
-
-    // Update cart count
-    const updateCartCount = () => {
-      const cart = JSON.parse(localStorage.getItem('cart') || '[]') as CartItem[];
-      setCartItems(cart);
-    };
+    updateCartCount();
 
     const handleProfileUpdate = () => {
       fetchProfile();
+      updateCartCount(); // Update cart when profile changes
     };
 
-    updateCartCount();
     window.addEventListener('cartUpdated', updateCartCount);
     window.addEventListener('profileUpdated', handleProfileUpdate);
 
@@ -58,13 +60,27 @@ export const Navbar = () => {
       window.removeEventListener('cartUpdated', updateCartCount);
       window.removeEventListener('profileUpdated', handleProfileUpdate);
     };
-  }, [fetchProfile]);
+  }, [fetchProfile, updateCartCount]);
 
   const handleLogout = () => {
+    const userEmail = localStorage.getItem('userEmail');
+    if (userEmail) {
+      // Save current cart to user's storage before logout
+      const currentCart = localStorage.getItem('cart');
+      if (currentCart) {
+        const userCartKey = `cart_${userEmail}`;
+        localStorage.setItem(userCartKey, currentCart);
+      }
+    }
+    
+    // Clear current session
     localStorage.removeItem('token');
     localStorage.removeItem('userName');
+    localStorage.removeItem('userEmail');
+    localStorage.removeItem('cart');
     setIsLoggedIn(false);
     setUserName('');
+    setCartItems([]);
     navigate('/login');
   };
 
