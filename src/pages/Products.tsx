@@ -21,7 +21,6 @@ export const Products = () => {
   const [error, setError] = useState('');
   const [showFilters, setShowFilters] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-  const [searchQuery, setSearchQuery] = useState(searchParams.get('search') || '');
 
   const initialFilters: FilterState = {
     category: null,
@@ -98,13 +97,6 @@ export const Products = () => {
       return sortBy === '' ? comparison : (sortOrder === 'asc' ? comparison : -comparison);
     });
   }, [getProductImageScore]);
-
-  useEffect(() => {
-    const query = searchParams.get('search');
-    if (query) {
-      setSearchQuery(query);
-    }
-  }, [searchParams]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -252,35 +244,15 @@ export const Products = () => {
             <>
               {/* Search Results Info */}
               {(searchParams.get('search') || filters.category) && (
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                  <div className="flex flex-wrap items-center gap-2 mb-2 sm:mb-0">
-                    <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
-                      {searchParams.get('search') && (
-                        <>
-                          Search results for "{searchParams.get('search')}"
-                        </>
-                      )}
-                    </h2>
-                    {searchParams.get('search') && filteredProducts.length > 0 && (
-                      <div className="flex items-center">
-                        <span className="text-gray-600 dark:text-gray-400 text-base">
-                          ({filteredProducts.length} products found)
-                        </span>
-                        <button
-                          onClick={() => {
-                            setSearchParams({});
-                            setSearchQuery('');
-                          }}
-                          className="ml-2 p-1 text-gray-400 hover:text-gray-600 dark:text-gray-500 dark:hover:text-gray-300 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
-                          aria-label="Clear search"
-                        >
-                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                            <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
-                          </svg>
-                        </button>
-                      </div>
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-semibold text-gray-800 dark:text-white">
+                    {searchParams.get('search') && `Search results for "${searchParams.get('search')}"`}
+                    {filteredProducts.length > 0 && (
+                      <span className="text-gray-600 dark:text-gray-400 text-base font-normal ml-2">
+                        ({filteredProducts.length} products found)
+                      </span>
                     )}
-                  </div>
+                  </h2>
                 </div>
               )}
               {/* Products Grid */}
