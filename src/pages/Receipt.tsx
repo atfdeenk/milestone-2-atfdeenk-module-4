@@ -101,16 +101,16 @@ export const Receipt = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="max-w-2xl mx-auto bg-white rounded-lg shadow-lg p-8">
+      <div className="max-w-2xl mx-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-bold text-blue-600 mb-2">Shop Smart 🛒</h1>
-          <p className="text-gray-600">Thank you for your purchase!</p>
+          <h1 className="text-3xl font-bold text-blue-600 dark:text-blue-400 mb-2">Shop Smart 🛒</h1>
+          <p className="text-gray-600 dark:text-gray-300">Thank you for your purchase!</p>
         </div>
 
         <div ref={receiptRef}>
-          <div className="border-b border-gray-200 pb-4 mb-4">
-            <h2 className="text-xl font-semibold mb-2">Purchase Receipt</h2>
-            <div className="text-gray-600">
+          <div className="border-b border-gray-200 dark:border-gray-700 pb-4 mb-4">
+            <h2 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Purchase Receipt</h2>
+            <div className="text-gray-600 dark:text-gray-300">
               <p>Order Number: {receiptData.orderNumber}</p>
               <p>Date: {receiptData.orderDate}</p>
             </div>
@@ -118,27 +118,27 @@ export const Receipt = () => {
 
           <div className="space-y-4 mb-6">
             {receiptData.items.map((item) => (
-              <div key={item.id} className="flex justify-between items-center border-b border-gray-200 pb-4">
+              <div key={item.id} className="flex justify-between items-center border-b border-gray-200 dark:border-gray-700 pb-4">
                 <div>
-                  <h3 className="font-medium">{item.title}</h3>
-                  <p className="text-gray-600 text-sm">Quantity: {item.quantity}</p>
+                  <h3 className="font-medium text-gray-900 dark:text-white">{item.title}</h3>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">Quantity: {item.quantity}</p>
                 </div>
                 <div className="text-right">
-                  <p className="font-medium">${(item.price * item.quantity).toFixed(2)}</p>
-                  <p className="text-gray-600 text-sm">${item.price.toFixed(2)} each</p>
+                  <p className="font-medium text-gray-900 dark:text-white">${(item.price * item.quantity).toFixed(2)}</p>
+                  <p className="text-gray-600 dark:text-gray-300 text-sm">${item.price.toFixed(2)} each</p>
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="border-t border-gray-200 pt-4">
+          <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
             <div className="flex justify-between items-center text-xl font-bold">
-              <span>Total</span>
-              <span>${receiptData.totalPrice.toFixed(2)}</span>
+              <span className="text-gray-900 dark:text-white">Total</span>
+              <span className="text-gray-900 dark:text-white">${receiptData.totalPrice.toFixed(2)}</span>
             </div>
           </div>
 
-          <div className="mt-8 text-center text-gray-600 text-sm">
+          <div className="mt-8 text-center text-gray-600 dark:text-gray-300 text-sm">
             <p>Thank you for shopping with Shop Smart 🛒</p>
             <p>For any questions, please contact our support team.</p>
           </div>
@@ -147,7 +147,7 @@ export const Receipt = () => {
         <div className="mt-8 flex flex-col sm:flex-row gap-4">
           <button
             onClick={() => navigate('/products')}
-            className="flex-1 px-6 py-3 bg-gray-100 text-gray-800 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+            className="flex-1 px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
           >
             Continue Shopping
           </button>
