@@ -95,10 +95,10 @@ export const ProductFilter = ({ categories, onFilterChange, initialFilters, isVi
       <button
         className="w-full bg-red-500 dark:bg-red-600 text-white py-2 rounded-md hover:bg-red-600 dark:hover:bg-red-700 transition-colors duration-200"
         onClick={() => {
-          const defaultFilters = {
+          const defaultFilters: FilterState = {
             category: null,
             priceRange: { min: 0, max: 0 },
-            sortBy: 'createdAt',
+            sortBy: '',
             sortOrder: 'desc' as const
           };
           setFilters(defaultFilters);
