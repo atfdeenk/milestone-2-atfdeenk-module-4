@@ -68,7 +68,7 @@ export const Navbar = () => {
           <div className="flex items-center">
             <Link to="/" className="flex items-center space-x-2">
               <span className="text-xl font-bold bg-gradient-to-r from-blue-500 to-blue-400 bg-clip-text text-transparent">
-                ShopApp
+                ShopSmart
               </span>
             </Link>
             <div className="hidden md:flex items-center ml-6">
