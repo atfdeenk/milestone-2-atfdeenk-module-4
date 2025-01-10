@@ -4,7 +4,6 @@ import { Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { Products } from './pages/Products';
 import { ProductDetail } from './pages/ProductDetail';
-import { Categories } from './pages/Categories';
 import { Cart } from './pages/Cart';
 import { Receipt } from './pages/Receipt';
 import './App.css';
@@ -28,7 +27,6 @@ export const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/products" element={<Products />} />
           <Route path="/products/:id" element={<ProductDetail />} />
-          <Route path="/categories" element={<Categories />} />
           <Route
             path="/cart"
             element={

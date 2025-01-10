@@ -1,23 +1,31 @@
+export interface Category {
+  id: number;
+  name: string;
+  image: string;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
 export interface Product {
   id: number;
   title: string;
   price: number;
   description: string;
-  category: {
-    id: number;
-    name: string;
-    image: string;
-  };
   images: string[];
-  creationAt?: string;
-  updatedAt?: string;
+  category: Category;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CartItem extends Product {
+  quantity: number;
 }
 
 export interface User {
   id: number;
   email: string;
   name: string;
-  role: string;
+  role: 'customer' | 'admin';
   avatar: string;
 }
 
@@ -29,10 +37,6 @@ export interface LoginCredentials {
 export interface RegisterCredentials extends LoginCredentials {
   name: string;
   avatar: string;
-}
-
-export interface CartItem extends Product {
-  quantity: number;
 }
 
 export interface Order {
