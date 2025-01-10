@@ -20,7 +20,6 @@ export const Navbar = () => {
     // Update cart count
     const updateCartCount = () => {
       const cart = JSON.parse(localStorage.getItem('cart') || '[]') as CartItem[];
-      const totalQuantity = cart.reduce((sum, item) => sum + item.quantity, 0);
       setCartItems(cart);
     };
 

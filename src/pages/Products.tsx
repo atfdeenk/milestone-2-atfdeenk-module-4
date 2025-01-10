@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Product, Category } from '../types';
 import { ProductFilter } from '../components/ProductFilter';
@@ -45,13 +45,13 @@ export const Products = () => {
     }
   };
 
-  const getProductImageScore = (product: Product) => {
+  const getProductImageScore = useCallback((product: Product) => {
     if (!product.images || product.images.length === 0) return 0;
     const validImages = product.images.filter(isValidImageUrl);
     return validImages.length;
-  };
+  }, []);
 
-  const sortProducts = (products: Product[], sortBy: string, sortOrder: 'asc' | 'desc') => {
+  const sortProducts = useCallback((products: Product[], sortBy: string, sortOrder: 'asc' | 'desc') => {
     return [...products].sort((a, b) => {
       let comparison = 0;
 
@@ -76,11 +76,12 @@ export const Products = () => {
           case 'title':
             comparison = a.title.localeCompare(b.title);
             break;
-          case 'createdAt':
+          case 'createdAt': {
             const dateA = new Date(a.createdAt || '').getTime();
             const dateB = new Date(b.createdAt || '').getTime();
             comparison = dateA - dateB;
             break;
+          }
           default:
             comparison = 0;
         }
@@ -95,7 +96,7 @@ export const Products = () => {
       
       return sortBy === '' ? comparison : (sortOrder === 'asc' ? comparison : -comparison);
     });
-  };
+  }, [getProductImageScore]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -135,7 +136,7 @@ export const Products = () => {
     };
 
     fetchProducts();
-  }, []);
+  }, [sortProducts]);
 
   useEffect(() => {
     let filtered = [...products];
@@ -167,7 +168,7 @@ export const Products = () => {
     // Apply final sorting
     const sortedFiltered = sortProducts(filtered, filters.sortBy, filters.sortOrder);
     setFilteredProducts(sortedFiltered);
-  }, [products, searchParams, filters]);
+  }, [products, searchParams, filters, sortProducts]);
 
   const handleFilterChange = (newFilters: FilterState) => {
     setFilters(newFilters);
