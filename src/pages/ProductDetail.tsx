@@ -145,35 +145,35 @@ export const ProductDetail = () => {
           <div className="lg:w-1/2 flex flex-col items-center text-center lg:items-start lg:text-left space-y-8">
             <div className="w-full">
               <nav className="flex mb-6 text-sm justify-center lg:justify-start">
-                <Link to="/products" className="text-gray-500 hover:text-blue-600">Products</Link>
-                <span className="mx-2 text-gray-500">/</span>
-                <Link to={`/categories`} className="text-gray-500 hover:text-blue-600">
+                <Link to="/products" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Products</Link>
+                <span className="mx-2 text-gray-500 dark:text-gray-400">/</span>
+                <Link to={`/categories`} className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">
                   {typeof product.category === 'string' ? product.category : product.category.name}
                 </Link>
               </nav>
 
-              <h1 className="text-4xl font-bold mb-6">{product.title}</h1>
+              <h1 className="text-4xl font-bold mb-6 text-gray-900 dark:text-white">{product.title}</h1>
               
               <div className="prose prose-lg mb-8 max-w-prose mx-auto lg:mx-0">
-                <p className="text-gray-600 leading-relaxed">{product.description}</p>
+                <p className="text-gray-600 dark:text-gray-300 leading-relaxed">{product.description}</p>
               </div>
             </div>
 
-            <div className="bg-gray-50 rounded-xl p-8 mb-8 w-full shadow-sm">
+            <div className="bg-gray-50 dark:bg-gray-800 rounded-xl p-8 mb-8 w-full shadow-sm">
               <div className="flex flex-col sm:flex-row items-center justify-between gap-6 mb-6">
                 <div className="text-center sm:text-left">
-                  <span className="text-4xl font-bold text-blue-500">${product.price}</span>
+                  <span className="text-4xl font-bold text-blue-500 dark:text-blue-400">${product.price}</span>
                   {product.price > 50 && (
-                    <span className="ml-3 inline-block bg-green-100 text-green-800 text-sm px-3 py-1.5 rounded-full font-medium">
+                    <span className="ml-3 inline-block bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-100 text-sm px-3 py-1.5 rounded-full font-medium">
                       Free Shipping
                     </span>
                   )}
                 </div>
                 <div className="flex items-center gap-4">
-                  <label htmlFor="quantity" className="text-gray-700 font-medium">
+                  <label htmlFor="quantity" className="text-gray-700 dark:text-gray-300 font-medium">
                     Quantity:
                   </label>
-                  <div className="flex items-center rounded-lg bg-white">
+                  <div className="flex items-center rounded-lg bg-white dark:bg-gray-700">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
                       className="px-4 py-2 bg-blue-500 text-white rounded-l-lg hover:bg-blue-600 disabled:opacity-50 transition-colors"
@@ -188,7 +188,7 @@ export const ProductDetail = () => {
                       max="99"
                       value={quantity}
                       onChange={(e) => setQuantity(Math.max(1, Math.min(99, parseInt(e.target.value) || 1)))}
-                      className="w-16 text-center border-x py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-16 text-center border-x py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white dark:border-gray-600"
                     />
                     <button
                       onClick={() => setQuantity(Math.min(99, quantity + 1))}
@@ -222,7 +222,7 @@ export const ProductDetail = () => {
             <div className="flex flex-col sm:flex-row gap-4 w-full">
               <Link
                 to="/products"
-                className="flex-1 text-center bg-gray-100 text-gray-800 px-8 py-4 rounded-lg hover:bg-gray-200 transition-all duration-200 text-lg font-medium hover:shadow-lg transform hover:-translate-y-0.5"
+                className="flex-1 text-center bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-white px-8 py-4 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-all duration-200 text-lg font-medium hover:shadow-lg transform hover:-translate-y-0.5"
               >
                 Continue Shopping
               </Link>
