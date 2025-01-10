@@ -142,13 +142,13 @@ export const Products = () => {
     let filtered = [...products];
 
     // Apply search filter
-    const searchQuery = searchParams.get('search') || '';
+    const searchQuery = searchParams.get('search')?.toLowerCase().trim() || '';
     if (searchQuery) {
-      filtered = filtered.filter(
-        (product) =>
-          product.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          product.description.toLowerCase().includes(searchQuery.toLowerCase())
-      );
+      filtered = filtered.filter((product) => {
+        // Only search in title for more precise results
+        const title = product.title.toLowerCase();
+        return title.includes(searchQuery);
+      });
     }
 
     // Apply category filter
