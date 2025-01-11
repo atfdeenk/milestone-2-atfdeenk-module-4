@@ -11,6 +11,12 @@ ShopSmart is a modern e-commerce platform built with React, TypeScript, and Tail
 
  [Live Demo](https://shopsmart-react.netlify.app)
 
+ **Demo Account**
+ email: john@mail.com
+ password: changeme
+
+ *This account are already registered in the API. You can also register your own account*
+
 ## Screenshots
 
 ### Home Page (Light/Dark Mode)
