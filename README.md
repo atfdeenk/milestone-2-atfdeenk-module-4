@@ -13,8 +13,9 @@ ShopSmart is a modern e-commerce platform built with React, TypeScript, and Tail
 
  **Demo Account**
  
- email: john@mail.com
- password: changeme
+ email: user@mail.com
+ 
+ password: 123456
 
  *This account are already registered in the API. You can also register your own account*
 
